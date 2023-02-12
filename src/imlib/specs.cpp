@@ -23,7 +23,7 @@
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifdef WIN32
+#if defined(_WIN32)
 # include <io.h>
 #endif
 
@@ -298,7 +298,7 @@ void jFILE::open_external(char const *filename, char const *mode, int flags)
 {
   int skip_size=0;
   char tmp_name[200];
-#ifdef WIN32
+#if defined(_WIN32)
   // Need to make sure it's not an absolute Windows path
   if (spec_prefix && filename[0] != '/' && (filename[0] != '\0' && filename[1] != ':'))
 #else
@@ -323,7 +323,7 @@ void jFILE::open_external(char const *filename, char const *mode, int flags)
 
     flags-=O_WRONLY;
     flags|=O_CREAT|O_RDWR;
-#ifdef WIN32
+#if defined(_WIN32)
     //printf("Open %s flags %x\n", tmp_name, flags);
     fd=open(tmp_name,flags,_S_IREAD | _S_IWRITE);
 #else
@@ -444,7 +444,7 @@ jFILE::jFILE(char const *filename, char const *access_string)      // same as fo
   {
     if (toupper(*s)=='A')
       access|=O_APPEND|O_WRONLY;
-#ifdef WIN32
+#if defined(_WIN32)
     // Also check for 'b' - doesn't exist on other platforms
     if (toupper(*s)=='B')
       access|=O_BINARY;

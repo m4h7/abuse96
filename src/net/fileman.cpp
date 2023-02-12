@@ -23,7 +23,7 @@
 #include <string.h>
 #include <signal.h>
 #include <sys/stat.h>
-#ifdef WIN32
+#if defined(_WIN32)
 # include <io.h>
 #endif
 
@@ -256,7 +256,7 @@ void file_manager::add_nfs_client(net_socket *sock)
     mp++;
   }
 
-#ifdef WIN32
+#if defined(_WIN32)
   int f=open(filename,flags,_S_IREAD | _S_IWRITE);
 #else
   int f=open(filename,flags,S_IRWXU | S_IRWXG | S_IRWXO);
@@ -460,7 +460,7 @@ int file_manager::rf_open_file(char const *&filename, char const *mode)
     {
       flags|=O_RDONLY;
     }
-#ifdef WIN32
+#if defined(_WIN32)
     else if (*mode=='b')
     {
       flags|=O_BINARY;
@@ -470,7 +470,7 @@ int file_manager::rf_open_file(char const *&filename, char const *mode)
   }
 
   char tmp_name[200];
-#ifdef WIN32
+#if defined(_WIN32)
   if (get_filename_prefix() && filename[0] != '/' && (filename[0] != '\0' && filename[1] != ':'))
 #else
   if (get_filename_prefix() && filename[0] != '/')
@@ -483,7 +483,7 @@ int file_manager::rf_open_file(char const *&filename, char const *mode)
     strcpy(tmp_name,filename);
   }
 
-#ifdef WIN32
+#if defined(_WIN32)
   int f = open(tmp_name, flags, S_IREAD|S_IWRITE);
 #else
   int f=open(tmp_name,flags,S_IRWXU | S_IRWXG | S_IRWXO);

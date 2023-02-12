@@ -12,7 +12,7 @@
 #   include "config.h"
 #endif
 
-#ifdef WIN32
+#if defined(_WIN32)
 # include <WinSock2.h>
 # include <Windows.h>
 // Windows has its own CreateWindow function. It uses preprocessor magic to
@@ -103,7 +103,7 @@ FILE *open_FILE(char const *filename, char const *mode)
 {
     /* FIXME: potential buffer overflow here */
     char tmp_name[200];
-#ifdef WIN32
+#if defined(WIN32)
     // Need to make sure it's not an absolute Windows path
     if(get_filename_prefix() && filename[0] != '/' && (filename[0] != '\0' && filename[1] != ':'))
 #else

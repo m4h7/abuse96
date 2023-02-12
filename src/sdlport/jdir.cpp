@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include <sys/types.h>
-#ifdef WIN32
+#if defined(_WIN32)
 # include <Windows.h>
 #else
 # include <dirent.h>
@@ -43,7 +43,7 @@ void get_directory(char *path, char **&files, int &tfiles, char **&dirs, int &td
     dirs = NULL;
     tfiles = 0;
     tdirs = 0;
-#ifdef WIN32
+#if defined(_WIN32)
 	WIN32_FIND_DATA findData;
 	HANDLE d = FindFirstFile(path, &findData);
 	if (d == INVALID_HANDLE_VALUE)

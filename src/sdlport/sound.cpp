@@ -22,7 +22,7 @@
 #   include "config.h"
 #endif
 
-#ifdef WIN32
+#if defined(_WIN32)
 # include <Windows.h>
 #endif
 #include <cstring>
@@ -59,7 +59,7 @@ int sound_init( int argc, char **argv )
     datadir = get_filename_prefix();
     sfxdir = (char *)malloc( strlen( datadir ) + 5 + 1 );
     sprintf( sfxdir, "%ssfx", datadir );
-#ifdef WIN32
+#if defined(_WIN32)
     // Attempting to fopen a directory under Windows will fail, and
     // opendir does not exist. Use GetFileAttributes instead.
     if( GetFileAttributes( sfxdir ) == INVALID_FILE_ATTRIBUTES )

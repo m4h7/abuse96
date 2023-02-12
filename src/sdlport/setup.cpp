@@ -22,7 +22,7 @@
 #   include "config.h"
 #endif
 
-#ifdef WIN32
+#if defined(_WIN32)
 # include <Windows.h>
 # include <ShlObj.h>
 # include <direct.h>
@@ -389,7 +389,7 @@ void setup( int argc, char **argv )
     char *savedir;
     FILE *fd = NULL;
 
-#ifdef WIN32
+#if defined(_WIN32)
     // Grab the profile dir
     PWSTR appData;
     SHGetKnownFolderPath(FOLDERID_RoamingAppData, 0, NULL, &appData);

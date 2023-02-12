@@ -22,7 +22,7 @@
 #   include "config.h"
 #endif
 
-#ifdef WIN32
+#if defined(_WIN32)
 # include <Windows.h>
 #else
 # include <stdio.h>
@@ -55,7 +55,7 @@ time_marker::time_marker()
 //
 void time_marker::get_time()
 {
-#ifdef WIN32
+#if defined(_WIN32)
 	// Use GetSystemTimeAsFileTime for this
 	GetSystemTimeAsFileTime(&ticks);
 #else

@@ -8,9 +8,9 @@
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#if defined WIN32
+#if defined(_WIN32)
 #   include <WinSock2.h>
-#   include <Windows.h>
+#   include <windows.h>
 #   include <stdio.h>
 // FIXME: Where is socklen_t in Windows?
 typedef int socklen_t;
@@ -156,7 +156,7 @@ class unix_fd : public net_socket
   virtual int write(void const *buf, int size, net_address *addr=NULL);
   virtual int read(void *buf, int size, net_address **addr);
 
-#ifdef WIN32
+#if defined(_WIN32)
   virtual ~unix_fd()                            { read_unselectable();  write_unselectable(); closesocket(fd); }
 #else
   virtual ~unix_fd()                            { read_unselectable();  write_unselectable(); close(fd); }
@@ -235,7 +235,7 @@ class udp_socket : public unix_fd
     if (addr)
       return sendto(fd,(char*)buf,size,0,(sockaddr *)(&((ip_address *)addr)->addr),sizeof(((ip_address *)addr)->addr));
     else {
-#ifdef WIN32
+#if defined(_WIN32)
       return send(fd, (char*)buf, size, 0);
 #else
       return ::write(fd,(char*)buf,size);

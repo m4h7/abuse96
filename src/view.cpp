@@ -15,8 +15,8 @@
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
-#ifdef WIN32
-# include <Windows.h>
+#if defined(_WIN32)
+# include <windows.h>
 // Windows preprocessor magic shadows JWindowManager's CreateWindow function.
 #undef CreateWindow
 #endif
@@ -183,7 +183,7 @@ char const *get_login()
 #if defined __CELLOS_LV2__
     /* FIXME: retrieve login name */
     return "Player";
-#elif defined WIN32
+#elif defined(_WIN32)
 	DWORD bufferSize = 120;
 	TCHAR *login;
 	login = (TCHAR*) malloc(bufferSize * sizeof(TCHAR));

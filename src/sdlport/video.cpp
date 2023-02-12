@@ -286,7 +286,7 @@ void palette::load()
     if(ncolors > 256)
         ncolors = 256;
 
-#ifdef WIN32
+#if defined(_WIN32)
 	// FIXME: Really, this applies to anything that doesn't allow dynamic stack allocation
 	SDL_Color colors[256];
 #else
