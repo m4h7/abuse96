@@ -1,0 +1,48 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: ${{ matrix.platform.name }} ${{ matrix.type.name }}
+    runs-on: ${{ matrix.platform.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - { name: Windows x86,     os: windows-latest,  flags: -A Win32 }
+        - { name: Windows x64,     os: windows-latest,  flags: -A x64 }
+        - { name: Windows ClangCL, os: windows-latest,  flags: -T ClangCL }
+        - { name: Windows Clang,   os: windows-latest,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja }
+        - { name: Linux GCC,       os: ubuntu-latest, flags: -GNinja }
+        - { name: Linux Clang,     os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: MacOS,           os: macos-latest, flags: -GNinja }
+        - { name: MacOS Xcode,     os: macos-latest, flags: -GXcode }
+        type:
+        - { name: Release, flags: -DCMAKE_BUILD_TYPE=Release }
+        - { name: Debug, flags: -DCMAKE_BUILD_TYPE=Debug }
+    env:
+      VCPKG_TOOLCHAIN_DIR: "..\\b\\vcpkg\\scripts\\buildsystems\\vcpkg.cmake"
+    steps:
+    - uses: actions/checkout@v3
+    - name: Windows Dependencies
+      if: runner.os == 'Windows'
+      uses: lukka/run-vcpkg@v10
+      with:
+        vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
+        runVcpkgInstall: true
+        vcpkgGitCommitId: 36fb23307e10cc6ffcec566c46c4bb3f567c82c6
+        appendedCacheKey: vcpkginstall
+    - name: Linux Dependencies
+      if: runner.os == 'Linux'
+      run: sudo apt-get update && sudo apt-get install ninja-build libsdl2-dev libsdl2-mixer-dev
+    - name: macOS Dependencies
+      if: runner.os == 'macOS'
+      run: brew install ninja sdl2 sdl2_mixer
+    - name: cmake configure
+      shell: bash
+      run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_INSTALL_PREFIX=$GITHUB_WORKSPACE/install -DCMAKE_VERBOSE_MAKEFILE=ON ${{matrix.platform.flags}} ${{matrix.type.flags}} ${{ runner.os == 'Windows' && '-DCMAKE_TOOLCHAIN_FILE=$VCPKG_TOOLCHAIN_DIR' }}
+    - name: cmake build
+      shell: bash
+      run: cmake --build $GITHUB_WORKSPACE/build --config ${{ matrix.type.name == 'Debug' && 'Debug' || 'Release' }} --target install
