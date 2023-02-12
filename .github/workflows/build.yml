@@ -46,3 +46,19 @@ jobs:
     - name: cmake build
       shell: bash
       run: cmake --build $GITHUB_WORKSPACE/build --config ${{ matrix.type.name == 'Debug' && 'Debug' || 'Release' }} --target install
+  tidy:
+    name: clang-tidy
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - name: checkout
+      uses: actions/checkout@v3
+    - name: Linux Dependencies
+      run: sudo apt-get update && sudo apt-get install ninja-build libsdl2-dev libsdl2-mixer-dev
+    - name: cmake configure
+      shell: bash
+      run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+    - name: clang-tidy
+      shell: bash
+      run: run-clang-tidy -p $GITHUB_WORKSPACE/build
